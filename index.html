@@ -36,6 +36,21 @@
         </div>
         <!-- Items Section -->
         <div id="itemsSection"></div>
+        <!-- Extra Charges Section -->
+        <!-- Extra Charges Section -->
+        <div id="extraChargesSection" style="margin-bottom:20px;">
+            <div style="font-weight:bold; text-decoration:underline; margin-bottom:7px; font-size:17px;">
+                Other charges
+            </div>
+            <ol id="extraChargesList" style="padding-left:18px; margin-bottom:5px;"></ol>
+            <button type="button" id="addExtraChargeBtn" style="margin-bottom:7px;">
+                + Add Other Charge
+            </button>
+            <hr style="border:0; border-top:2px solid #1976d2; margin:8px 0;">
+            <div style="font-size:1.3em; font-weight: bold; text-align:left;">
+                Total :-- <span id="extraChargesTotalAmount">0</span>
+            </div>
+        </div>
 
         <div class="form-row" id="totalRow" style="justify-content: flex-end;">
             <label style="font-weight: bold; font-size: 17px;">
@@ -44,16 +59,15 @@
                     style="color: #3785e9; min-width: 80px; display: inline-block; text-align: right;">₹0</span>
             </label>
         </div>
-
         <div class="form-row">
             <button type="button" id="generateBtn" onclick="openEstimatePreview()">Generate Estimate</button>
             <button type="button" id="newEstimateBtn">+ Add New Estimate</button>
         </div>
-        <!-- <div class="form-row" style="justify-content: flex-end;">
-            <button type="button" id="newEstimateBtn">+ Add New Estimate</button>
-        </div> -->
+
 
     </form>
+
+
     <script src="script.js"></script>
 </body>
 
