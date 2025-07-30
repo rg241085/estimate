@@ -1,0 +1,123 @@
+body {
+    background: #f4f7fa;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 30px;
+    color: #3785e9;
+}
+
+form {
+    max-width: 700px;
+    background: #fff;
+    margin: 30px auto 0 auto;
+    padding: 30px 25px 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(55, 133, 233, 0.11), 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.form-row {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    flex: 1 1 0;
+    min-width: 120px;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    color: #23395c;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    margin-bottom: 5px;
+}
+
+input[type='text'],
+input[type='number'],
+input[type='date'] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1.5px solid #b6c3cf;
+    border-radius: 6px;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+    background: #f8fafc;
+}
+
+input[type='text']:focus,
+input[type='number']:focus,
+input[type='date']:focus {
+    border-color: #3785e9;
+    background: #eef4fa;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+button {
+    margin: 22px 0 10px 0;
+    background: #3785e9;
+    color: white;
+    font-weight: 600;
+    font-size: 17px;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 22px;
+    cursor: pointer;
+    transition: background 0.23s;
+    box-shadow: 0 3px 10px rgba(55, 133, 233, 0.03);
+}
+
+button:hover {
+    background: #2357c9;
+}
+
+.remove-btn {
+    background: #e64948;
+    color: #fff;
+    padding: 6px 9px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 19px;
+}
+
+.remove-btn:hover {
+    background: #ba150c;
+}
+
+@media (max-width: 700px) {
+    form {
+        padding: 13px 7px;
+        font-size: 15px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Estimate Maker</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <h2>Estimate Generator</h2>
+    <form id="estimateForm" autocomplete="off" onsubmit="return false;">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Date:
+                    <input type="date" id="date" required />
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Vch. Number:
+                    <input type="text" id="vchNumber" required readonly />
+                </label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Customer Name:
+                    <input type="text" id="customerName" required />
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Mobile Number:
+                    <input type="text" id="mobileNumber" maxlength="10" required pattern="\d{10}" inputmode="numeric" />
+                </label>
+            </div>
+        </div>
+        <!-- Items Section -->
+        <div id="itemsSection"></div>
+
+        <div class="form-row" id="totalRow" style="justify-content: flex-end;">
+            <label style="font-weight: bold; font-size: 17px;">
+                Total Amount:
+                <span id="grandTotal"
+                    style="color: #3785e9; min-width: 80px; display: inline-block; text-align: right;">₹0</span>
+            </label>
+        </div>
+
+        <div class="form-row">
+            <button type="button" id="generateBtn" onclick="openEstimatePreview()">Generate Estimate</button>
+            <button type="button" id="newEstimateBtn">+ Add New Estimate</button>
+        </div>
+        <!-- <div class="form-row" style="justify-content: flex-end;">
+            <button type="button" id="newEstimateBtn">+ Add New Estimate</button>
+        </div> -->
+
+    </form>
+    <script src="script.js"></script>
+</body>
+
+</html>
