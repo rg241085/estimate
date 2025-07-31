@@ -26,37 +26,41 @@ function removeNumberSpinners() {
 }
 removeNumberSpinners();
 
+function itemTableHTML() {
+  return `
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>S.N.</th>
+          <th>Item</th>
+          <th>Quantity</th>
+          <th>Rate</th>
+          <th>Amount</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="itemsBody"></tbody>
+    </table>
+  `;
+}
+
 function itemRowHTML(id) {
-  return `<div class="form-row items-row" id="itemRow-${id}">
-      <div class="form-group">
-        <label>Item:
-          <input type="text" class="item" required autocomplete="off">
-        </label>
-      </div>
-      <div class="form-group">
-        <label>Quantity:
-          <input type="number" class="qty" min="1" placeholder="Qty" required autocomplete="off" onkeydown="preventScrollChange(event)">
-        </label>
-      </div>
-      <div class="form-group">
-        <label>Rate:
-          <input type="number" class="rate" min="0" placeholder="Rate" required autocomplete="off" onkeydown="preventScrollChange(event)">
-        </label>
-      </div>
-      <div class="form-group">
-        <label>Amount:
-          <input type="text" class="amount" placeholder="Amount" readonly tabindex="-1">
-        </label>
-      </div>
-      <div class="form-group remove-btn-group" style="align-self:end;margin-bottom:5px;">
-        ${id === 0 ? '' : `<button type="button" class="remove-btn" onclick="removeItemRow('itemRow-${id}')">×</button>`}
-      </div>
-    </div>`;
+  return `
+    <tr class="item-row" id="itemRow-${id}">
+      <td class="sn">${id + 1}</td>
+      <td><input type="text" class="item" required autocomplete="off" placeholder="Item"></td>
+      <td><input type="number" class="qty" min="1" placeholder="Qty" required autocomplete="off" onkeydown="preventScrollChange(event)"></td>
+      <td><input type="number" class="rate" min="0" placeholder="Rate" required autocomplete="off" onkeydown="preventScrollChange(event)"></td>
+      <td><input type="text" class="amount" placeholder="Amount" readonly tabindex="-1"></td>
+      ${id === 0 ? '' : '<td class="remove-btn" onclick="removeItemRow(\'itemRow-' + id + '\')">×</td>'}
+    </tr>
+  `;
 }
 
 function addFirstItemRow() {
   itemLineNo = 0;
-  itemsSection.innerHTML = itemRowHTML(0);
+  itemsSection.innerHTML = itemTableHTML();
+  document.getElementById('itemsBody').innerHTML = itemRowHTML(0);
   addAutoAmountEvents();
   addKeyboardNavigation();
   updateGrandTotal();
@@ -66,11 +70,12 @@ addFirstItemRow();
 window.addItemRow = function () {
   itemLineNo++;
   const id = itemLineNo;
-  itemsSection.insertAdjacentHTML('beforeend', itemRowHTML(id));
+  const itemsBody = document.getElementById('itemsBody');
+  itemsBody.insertAdjacentHTML('beforeend', itemRowHTML(id));
   addAutoAmountEvents();
   addKeyboardNavigation();
   setTimeout(() => {
-    itemsSection.querySelector(`#itemRow-${id} .item`).focus();
+    itemsBody.querySelector(`#itemRow-${id} .item`).focus();
   }, 40);
   updateGrandTotal();
 };
@@ -96,7 +101,7 @@ function addAutoAmountEvents() {
   });
 }
 function autoAmountAll() {
-  document.querySelectorAll('.items-row').forEach(row => {
+  document.querySelectorAll('.item-row').forEach(row => {
     let qty = +row.querySelector('.qty').value || 0;
     let rate = +row.querySelector('.rate').value || 0;
     let amountField = row.querySelector('.amount');
@@ -107,7 +112,7 @@ function autoAmountAll() {
 
 function updateGrandTotal() {
   let total = 0;
-  document.querySelectorAll('.items-row').forEach(row => {
+  document.querySelectorAll('.item-row').forEach(row => {
     const qty = +row.querySelector('.qty').value || 0;
     const rate = +row.querySelector('.rate').value || 0;
     total += (qty && rate) ? qty * rate : 0;
@@ -125,12 +130,12 @@ function validateForm(setFocusOnError = true) {
     return false;
   }
   let ok = true;
-  document.querySelectorAll('.items-row').forEach(row => {
+  document.querySelectorAll('.item-row').forEach(row => {
     if (!ok) return;
     const item = row.querySelector('.item'), qty = row.querySelector('.qty'), rate = row.querySelector('.rate');
     if (!item.value.trim()) { if (setFocusOnError) showAlert('कृपया सभी आइटम नाम भरें।', item); ok = false; }
     else if (!qty.value.trim() || isNaN(qty.value) || +qty.value < 1) { if (setFocusOnError) showAlert('Quantity सही दर्ज करें।', qty); ok = false; }
-    else if (!rate.value.trim() || isNaN(rate.value) || +rate.value < 0) { if (setFocusOnError) showAlert('Rate सही दर्ज करें।', rate); ok = false; }
+    else if (!rate.value.trim() || isNaN(rate.value) || +rate.value < 0) { if (setFocusOnError) showAlert('Rate सही दर्ज करें。', rate); ok = false; }
   });
   // Validate extra charges
   if (ok) {
@@ -148,8 +153,8 @@ function validateForm(setFocusOnError = true) {
 function validateSingleRow(row) {
   const item = row.querySelector('.item'), qty = row.querySelector('.qty'), rate = row.querySelector('.rate');
   if (!item.value.trim()) { showAlert('कृपया आइटम नाम भरें।', item); return false; }
-  if (!qty.value.trim() || isNaN(qty.value) || +qty.value < 1) { showAlert('Quantity सही दर्ज करें।', qty); return false; }
-  if (!rate.value.trim() || isNaN(rate.value) || +rate.value < 0) { showAlert('Rate सही दर्ज करें।', rate); return false; }
+  if (!qty.value.trim() || isNaN(qty.value) || +qty.value < 1) { showAlert('Quantity सही दर्ज करें。', qty); return false; }
+  if (!rate.value.trim() || isNaN(rate.value) || +rate.value < 0) { showAlert('Rate सही दर्ज करें。', rate); return false; }
   return true;
 }
 
@@ -166,7 +171,7 @@ function addKeyboardNavigation() {
             if (idx > 0) estFormInputs[idx - 1].focus();
           } else {
             if (input.classList.contains('rate')) {
-              const row = input.closest('.items-row');
+              const row = input.closest('.item-row');
               const amountField = row.querySelector('.amount');
               if (amountField) amountField.focus();
             } else {
@@ -182,7 +187,7 @@ function addKeyboardNavigation() {
       amountInput.onkeydown = function (e) {
         if (e.key === 'Enter') {
           e.preventDefault();
-          const row = amountInput.closest('.items-row');
+          const row = amountInput.closest('.item-row');
           if (row) saveItemWorkflow(row);
         }
       };
@@ -213,22 +218,34 @@ let extraChargeLineNo = 0;
 const extraChargesList = document.getElementById('extraChargesList');
 const addExtraChargeBtn = document.getElementById('addExtraChargeBtn');
 
+function extraChargeTableHTML() {
+  return `
+    <table class="extra-charges-table">
+      <tbody id="extraChargesBody"></tbody>
+    </table>
+  `;
+}
+
 function extraChargeRowHTML(id) {
-  return `<div class="extra-charge-row" id="extraChargeRow-${id}">
-        <input type="text" class="extra-charge-name" placeholder="Charge Name" required />
-        <input type="number" class="extra-charge-amount" placeholder="Amount" min="0" required />
-        ${id === 0 ? '' : `<button type="button" class="remove-extra-btn" onclick="removeExtraChargeRow('extraChargeRow-${id}')">×</button>`}
-    </div>`;
+  return `
+    <tr class="extra-charge-row" id="extraChargeRow-${id}">
+      <td><input type="text" class="extra-charge-name" placeholder="Charge Name" required></td>
+      <td><input type="number" class="extra-charge-amount" placeholder="Amount" min="0" required onkeydown="preventScrollChange(event)"></td>
+      ${id === 0 ? '' : '<td class="remove-extra-btn" onclick="removeExtraChargeRow(\'extraChargeRow-' + id + '\')">×</td>'}
+    </tr>
+  `;
 }
 
 function addFirstExtraChargeRow() {
   extraChargeLineNo = 0;
-  extraChargesList.innerHTML = extraChargeRowHTML(0);
+  extraChargesList.innerHTML = extraChargeTableHTML();
+  document.getElementById('extraChargesBody').innerHTML = extraChargeRowHTML(0);
   addExtraChargeInputEvents();
 }
 function addExtraChargeRow() {
   extraChargeLineNo++;
-  extraChargesList.insertAdjacentHTML('beforeend', extraChargeRowHTML(extraChargeLineNo));
+  const extraChargesBody = document.getElementById('extraChargesBody');
+  extraChargesBody.insertAdjacentHTML('beforeend', extraChargeRowHTML(extraChargeLineNo));
   addExtraChargeInputEvents();
 }
 
@@ -251,6 +268,8 @@ function addExtraChargeInputEvents() {
   document.querySelectorAll('.extra-charge-amount').forEach(input => {
     input.removeEventListener('input', updateGrandTotal);
     input.addEventListener('input', updateGrandTotal);
+    input.removeEventListener('wheel', preventScrollChange);
+    input.addEventListener('wheel', preventScrollChange, { passive: false });
   });
 }
 
@@ -258,7 +277,7 @@ function validateSingleExtraRow(row) {
   const name = row.querySelector('.extra-charge-name');
   const amt = row.querySelector('.extra-charge-amount');
   if (!name.value.trim()) { showAlert('कृपया Extra Charge का नाम भरें।', name); return false; }
-  if (!amt.value.trim() || isNaN(amt.value) || +amt.value < 0) { showAlert('Amount सही दर्ज करें।', amt); return false; }
+  if (!amt.value.trim() || isNaN(amt.value) || +amt.value < 0) { showAlert('Amount सही दर्ज करें。', amt); return false; }
   return true;
 }
 
@@ -303,7 +322,6 @@ document.getElementById('estimateForm').addEventListener('keydown', function (e)
 });
 
 // Open Estimate Preview including extra charges
-// Open Estimate Preview including extra charges
 function openEstimatePreview() {
   if (!validateForm(true)) return;
   const date = document.getElementById('date').value;
@@ -312,7 +330,7 @@ function openEstimatePreview() {
   const mobile = document.getElementById('mobileNumber').value;
   let rowsHtml = '', itemsTotal = 0;
 
-  document.querySelectorAll('.items-row').forEach(row => {
+  document.querySelectorAll('.item-row').forEach(row => {
     const item = row.querySelector('.item').value;
     const qty = +row.querySelector('.qty').value, rate = +row.querySelector('.rate').value;
     const amount = qty * rate;
@@ -348,32 +366,38 @@ function openEstimatePreview() {
       <title>Estimate Preview</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background:#f4f8fb; margin:0;}
+        body { font-family: 'Segoe UI', Arial, sans-serif; background:#f4f8fb; margin:0; }
         .est-wrap {
           max-width:780px; margin:34px auto 24px auto; background:#fff;
           box-shadow:0 6px 36px rgba(55,133,233,0.13);
           border-radius:14px; padding-bottom:28px;
         }
         .est-head {
-          background: #1976d2; /* fallback for PDF/print */
+          background: #1976d2; /* Solid fallback color */
           background: linear-gradient(90deg,#1976d2 60%,#60a5fa 100%);
           color:white; font-size:2.2em; font-weight:900;
           letter-spacing:2px; padding:24px 0 18px 0;
           text-align:center; text-transform:uppercase;
           box-shadow:0 2px 10px rgba(50,100,200,0.06);
           border-radius:14px 14px 0 0;
+          -webkit-print-color-adjust: exact; /* Force color printing in Webkit browsers */
+          print-color-adjust: exact; /* Standard property for color printing */
         }
         .est-info-box {
           background:#f3f6fb; border:1.5px solid #d2e3fa;
           border-radius:9px; margin:26px 34px 18px 34px;
           padding:18px 22px; font-size:1.11em; color:#2357c9;
           display:flex; flex-wrap:wrap; gap:24px 60px; align-items:center; justify-content:flex-start;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
         .est-info-label { font-weight:700; min-width:120px; display:inline-block;}
         .est-table-area { padding:0 28px 0 28px;}
         table {
           width:100%; border-collapse:collapse; margin:20px 0 0 0;
           box-shadow:0 2px 12px rgba(80,120,210,0.09);
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
         th, td { border:1.5px solid #c2dbf6; padding:13px 12px; }
         th {
@@ -381,27 +405,39 @@ function openEstimatePreview() {
           color:#1976d2;
           font-size:1.11em; font-weight:700; text-align:left;
           letter-spacing:0.5px;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
         td { font-size:1.07em; }
         td:last-child, th:last-child { text-align:right;}
-        .extra-row td { background:#f7fafd; color:#1976d2; font-weight:600; }
+        .extra-row td {
+          background:#f7fafd; color:#4b5563; font-weight:500; font-size:0.9em;
+          padding: 3px 6px;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
         .est-table-footer td {
           font-weight:bold; background:#e6ffe9; font-size:1.12em; color:#15803d;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
         .other-charges-head {
-          text-align:right; font-weight:700; color:#555; font-size:1em;
-          padding:7px 12px 0 0; border:none; background:none;
+          text-align:right; font-weight:500; color:#555; font-size:0.9em;
+          padding:5px 6px 0 0; border:none; background:none;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
         .est-footer-btns {
-          text-align:center; margin-top:30px;
+          text-align:center; margin-top:20px;
         }
         .print-btn, .pdf-btn {
           background: #1976d2;
           background: linear-gradient(90deg,#1976d2 60%,#60a5fa 100%);
-          color:white; font-weight:700; padding:13px 36px;
-          border:none; border-radius:8px; font-size:1.14em; cursor:pointer;
-          margin:0 7px 0 7px; letter-spacing:1px; transition:0.2s;
-          box-shadow:0 2px 10px rgba(55,133,233,0.15);
+          color:white; font-weight:700; padding:10px 25px;
+          border:none; border-radius:6px;
+          font-size:1em; cursor:pointer; margin:0 5px 0 5px;
+          letter-spacing:1px; transition:0.2s;
+          box-shadow:0 2px 8px rgba(55,133,233,0.12);
         }
         .print-btn:hover, .pdf-btn:hover { background: #1565c0; }
         @media (max-width:700px) {
@@ -411,11 +447,16 @@ function openEstimatePreview() {
           .est-table-area { padding:0 4vw;}
           table { font-size:1em; }
           th, td { padding:8px 4px;}
+          .extra-row td { padding: 2px 4px; font-size: 0.85em; }
+          .other-charges-head { font-size: 0.85em; padding: 3px 4px 0 0; }
+          .est-footer-btns { margin-top:15px; }
+          .print-btn, .pdf-btn { padding:8px 20px; font-size:0.9em; margin:0 4px; }
         }
         @media print {
           .print-btn, .pdf-btn { display:none !important; }
           body { background: #fff !important; }
           .est-wrap { box-shadow:none !important; }
+          * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* Apply to all elements */
         }
       </style>
     </head>
@@ -453,7 +494,7 @@ function openEstimatePreview() {
       <script>
         function downloadPDF() {
           html2pdf(document.querySelector('.est-wrap'), {
-            margin:0.3, filename:'Estimate.pdf', image:{type:'jpeg', quality:0.98}, html2canvas:{scale:2}
+            margin:0.3, filename:'Estimate.pdf', image:{type:'jpeg', quality:0.98}, html2canvas:{scale:2, useCORS: true}
           });
         }
       </script>
@@ -480,4 +521,4 @@ document.getElementById('newEstimateBtn').onclick = function () {
 // Initialize extra charges section on load
 addFirstExtraChargeRow();
 // Initialize keyboard navigation for items
-addKeyboardNavigation();
+addKeyboardNavigation();  
